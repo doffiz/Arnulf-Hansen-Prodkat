@@ -239,7 +239,7 @@ const handleFamilyClick = (familyName: string) => {
       <main className="min-h-screen text-black bg-slate-50">
         {/* <Breadcrumb data={pageData} /> */}
         <section
-          className={`max-w-[1300px] py-12 gap-6 flex mx-auto px-4 md:px-2 py-4`}
+          className={`max-w-[1300px] py-12 gap-6 flex flex-col md:flex-row mx-auto px-4 md:px-2 py-4`}
         >
           <aside className="basis-1/5">
             <Accordion title="MERKE" open={true}>
