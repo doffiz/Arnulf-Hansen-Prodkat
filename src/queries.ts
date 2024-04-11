@@ -11,7 +11,16 @@ export const navQuery = `{
         },
         menuType,
         menuColor,
-        menuTextColor
+        menuTextColor,
+        extranav[]{
+            title,
+            link {
+                internalLink->{
+                    permalenke
+                },
+                externalLink
+            }
+        }
     }
 }`;
 
@@ -29,7 +38,17 @@ export const setupQuery = `{
         },
         menuType,
         menuColor,
-        menuTextColor
+        menuTextColor,
+        extranav[]->{
+            title,
+            link {
+                internalLink->{
+                    slug,
+                    
+                },
+                externalLink
+            }
+        }
     },
     "setup": *[_type == "setup"]{
         logo {

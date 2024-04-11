@@ -25,6 +25,7 @@ type Menu = {
   menuType: string;
   menuColor: string;
   menuTextColor: string;
+  extranav: MenuItem[];
 };
 
 type ImageType = {
@@ -45,13 +46,14 @@ type Props = {
 
 export default function Header({ menu, setup }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  console.log(menu);
   return (
     <>
       <header
         className={`${opensans.className}`}
         style={{ backgroundColor: menu.menuColor, color: menu.menuTextColor }}
       >
-        <div className="flex items-center justify-between py-8 px-[20px] md:min-h-[220px] xl:px-0 lg:text-xl text-lg max-w-[1300px] mx-auto">
+        <div className="flex items-center justify-between py-4 px-[20px] md:min-h-[220px] xl:px-0 lg:text-xl text-lg max-w-[1300px] mx-auto">
           <Link
             className="max-h-[50px] md:max-h-[100px] max-w-[150px] md:max-w-[450px] w-full"
             href="/"
@@ -64,10 +66,32 @@ export default function Header({ menu, setup }: Props) {
               alt={setup.title + " - Til forsiden"}
             />
           </Link>
+          <div className="flex flex-col items-end justify-start">
+          {menu.extranav && (
+            <nav>
+              <ul className="flex gap-4 px-4 ">
+                {menu.extranav &&
+                  menu.extranav.map((item) => (
+                    <li className="border-[1px] rounded-full cursor-pointer text-[1rem] font-semibold px-4 py-[0.2rem] hover:bg-white hover:text-[#842426]" key={item.title}>
+                      <Link
+                        role="button"
+                        href={
+                          item.link?.externalLink ||
+                          `/${item.link?.internalLink?.slug?.current ?? "#"}`
+                        }
+                        >
+                        {item.title}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </nav>
+          
+          )}
           {menu.menuType === "hamburger" ? (
             <button
-              className="flex flex-col p-4 justify-end items-center"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex flex-col p-4 justify-end w-fit items-center"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <FontAwesomeIcon icon={isMenuOpen ? "times" : "bars"} size="2x" />
               Meny
@@ -83,7 +107,7 @@ export default function Header({ menu, setup }: Props) {
                           item.link?.externalLink ||
                           `/${item.link?.internalLink?.slug?.current ?? "#"}`
                         }
-                      >
+                        >
                         {item.title}
                       </Link>
                     </li>
@@ -91,6 +115,7 @@ export default function Header({ menu, setup }: Props) {
               </ul>
             </nav>
           )}
+          </div>
         </div>
       {isMenuOpen && (
   <nav
