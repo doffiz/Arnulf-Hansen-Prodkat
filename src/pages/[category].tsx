@@ -331,7 +331,7 @@ const handleFamilyClick = (familyName: string) => {
                       >
                         <Link href={`/${pageData.slug.current}/${product.sku}`}>
                           <Image
-                            className="object-contain w-full h-56"
+                            className="object-contain mix-blend-darken w-full h-56"
                             src={product.hovedbilde.cdnUrl || ""}
                             alt={product.hovedbilde.alt}
                             width={500}

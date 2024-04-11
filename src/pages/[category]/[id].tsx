@@ -14,6 +14,7 @@ import { formatPrice } from "@/helpers/formatPrice";
 import SpecsGrid from "@/components/spesifikasjoner";
 import LangBeskrivelseComponent from "@/components/langBeskrivelse";
 import BildeGalleri from "@/components/bildegrid";
+import KatalogerComponent from "@/components/downloads";
 
 interface PageProps {
   pageData: Produkt;
@@ -305,6 +306,9 @@ export default function PostPage({ pageData, metadata }: PageProps) {
         )}
         {pageData.bildegalleri && pageData.bildegalleri.length > 0 && (
           <BildeGalleri bildegalleri={pageData.bildegalleri} />
+        )}
+        {pageData.kataloger && pageData.kataloger.length > 0 && (
+          <KatalogerComponent kataloger={pageData.kataloger} />
         )}
       </main>
     </>
