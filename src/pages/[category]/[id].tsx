@@ -193,29 +193,33 @@ export default function PostPage({ pageData, metadata }: PageProps) {
     
     const [selectedVariant2, setSelectedVariant2] = useState<Variant | null>(null);
 
-    const variantAttribute1Options = pageData.varianter.reduce((unique, variant) => {
-      if (
-        variant.variantAttribute1 &&
-        variant.sku !== "1" &&
-        !variant.sku.includes("SPC") &&
-        !unique.find(item => item.variantOption1.name === variant.variantOption1.name)
-      ) {
-        unique.push(variant);
-      }
-      return unique;
-    }, []);
-    
-    const variantAttribute2Options = pageData.varianter.reduce((unique, variant) => {
-      if (
-        variant.variantAttribute2 &&
-        variant.sku !== "1" &&
-        !variant.sku.includes("SPC") &&
-        !unique.find(item => item.variantOption2.name === variant.variantOption2.name)
-      ) {
-        unique.push(variant);
-      }
-      return unique;
-    }, []);
+    const variantAttribute1Options = pageData.varianter
+      ? pageData.varianter.reduce((unique, variant) => {
+          if (
+            variant.variantAttribute1 &&
+            variant.sku !== "1" &&
+            !variant.sku.includes("SPC") &&
+            !unique.find(item => item.variantOption1.name === variant.variantOption1.name)
+          ) {
+            unique.push(variant);
+          }
+          return unique;
+        }, [])
+      : [];
+
+    const variantAttribute2Options = pageData.varianter
+      ? pageData.varianter.reduce((unique, variant) => {
+          if (
+            variant.variantAttribute2 &&
+            variant.sku !== "1" &&
+            !variant.sku.includes("SPC") &&
+            !unique.find(item => item.variantOption2.name === variant.variantOption2.name)
+          ) {
+            unique.push(variant);
+          }
+          return unique;
+        }, [])
+      : [];
 
     useEffect(() => {
       // Check if selectedVariant is not null
