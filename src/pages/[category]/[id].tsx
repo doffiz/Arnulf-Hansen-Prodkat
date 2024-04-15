@@ -1,6 +1,8 @@
+ // @ts-nocheck
 import { GetServerSidePropsContext } from "next";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import createClient from "@/lib/sanityClient";
 import { Produkt } from "@/types";
 import { generateMetadata } from "@/helpers/generateMetadata";
@@ -15,6 +17,7 @@ import SpecsGrid from "@/components/spesifikasjoner";
 import LangBeskrivelseComponent from "@/components/langBeskrivelse";
 import BildeGalleri from "@/components/bildegrid";
 import KatalogerComponent from "@/components/downloads";
+import ContactForm from "@/components/getOffer";
 
 interface PageProps {
   pageData: Produkt;
@@ -102,6 +105,22 @@ async function fetchPageData(sku: string): Promise<Produkt> {
         toPriceExVat,
         toPriceIncVat,
         vatRate,
+        variantAttribute1{
+          code,
+          name
+        },
+        variantOption1{
+          code,
+          name
+        },
+        variantAttribute2{
+          code,
+          name
+        },
+        variantOption2{
+          code,
+          name
+        },
         values {
             included_propeller_size,
             shaft_length,
@@ -121,6 +140,7 @@ async function fetchPageData(sku: string): Promise<Produkt> {
 
   const params = { sku };
   const page: Produkt = await createClient.fetch(query, params);
+
 
   return page;
 }
@@ -162,13 +182,73 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function PostPage({ pageData, metadata }: PageProps) {
-  const [selectedVariant, setSelectedVariant] = useState(
-    pageData.varianter && pageData.varianter.length > 0
-      ? pageData.varianter[0]
-      : null
-  );
-  console.log(pageData);
-  const router = useRouter();
+  
+    const router = useRouter();
+    type Variant = Produkt['varianter'][0];
+    const [selectedVariant, setSelectedVariant] = useState<Variant | null>(
+      pageData.varianter && pageData.varianter.length > 0
+        ? pageData.varianter.find(variant => variant.sku !== "1" && !variant.sku.includes("SPC"))
+        : null
+    );
+    
+    const [selectedVariant2, setSelectedVariant2] = useState<Variant | null>(null);
+
+    const variantAttribute1Options = pageData.varianter.reduce((unique, variant) => {
+      if (
+        variant.variantAttribute1 &&
+        variant.sku !== "1" &&
+        !variant.sku.includes("SPC") &&
+        !unique.find(item => item.variantOption1.name === variant.variantOption1.name)
+      ) {
+        unique.push(variant);
+      }
+      return unique;
+    }, []);
+    
+    const variantAttribute2Options = pageData.varianter.reduce((unique, variant) => {
+      if (
+        variant.variantAttribute2 &&
+        variant.sku !== "1" &&
+        !variant.sku.includes("SPC") &&
+        !unique.find(item => item.variantOption2.name === variant.variantOption2.name)
+      ) {
+        unique.push(variant);
+      }
+      return unique;
+    }, []);
+
+    useEffect(() => {
+      // Check if selectedVariant is not null
+      if (selectedVariant) {
+        // Get the variant attribute names
+        const variantAttribute1Name = selectedVariant.variantAttribute1.name;
+        const variantAttribute2Name = selectedVariant.variantAttribute2.name;
+
+        // Check if the URL has query parameters that match the variant attribute names
+        if (router.query[variantAttribute1Name]) {
+          // Find the corresponding variant in variantAttribute1Options
+          const variant1 = variantAttribute1Options.find(
+            variant => variant.variantOption1.name === router.query[variantAttribute1Name]
+          );
+
+          // Set it as the selectedVariant
+          if (variant1) setSelectedVariant(variant1);
+        }
+
+        if (router.query[variantAttribute2Name]) {
+          // Find the corresponding variant in variantAttribute2Options
+          const variant2 = variantAttribute2Options.find(
+            variant => variant.variantOption2.name === router.query[variantAttribute2Name]
+          );
+
+          // Set it as the selectedVariant2
+          if (variant2) setSelectedVariant2(variant2);
+        }
+      }
+    }, [router.query, selectedVariant]); // Add selectedVariant to the dependency array
+    
+
+
 
   return (
     <>
@@ -236,49 +316,79 @@ export default function PostPage({ pageData, metadata }: PageProps) {
                     VARENUMMER: {pageData.sku}
                   </p>
                 )}
-              {pageData.varianter &&
-                pageData.varianter.length > 0 &&
-                pageData.family.code &&
-                pageData.family.code === "baat" && (
-                  <>
-                    <p className="font-semibold">Motor:</p>
-                  </>
-                )}
-              {(pageData.varianter &&
-                pageData.varianter.length > 0 &&
-                pageData.family.code &&
-                pageData.family.code === "outboard_motor_electric") ||
-                (pageData.family.code === "outboard_motor_fossil" && (
-                  <>
-                    <p className="font-semibold">Stammelengde:</p>
-                  </>
-                ))}
-              <div className="flex flex-wrap gap-2">
-                {pageData.varianter &&
-                  pageData.varianter.map((variant, index) => (
-                    <div
-                      className={`w-fit p-4 rounded cursor-pointer ${
-                        selectedVariant && selectedVariant.sku === variant.sku
-                          ? "bg-white border-2 border-slate-950"
-                          : "bg-white border-1 border-slate-400"
-                      }`}
-                      key={index}
-                      onClick={() => {
-                        setSelectedVariant(variant);
-                        router.push(
-                          {
-                            pathname: router.pathname,
-                            query: { ...router.query, variant: variant.sku },
+        {variantAttribute1Options.length > 0 && (
+          <>
+            <p className="text-slate-950 font-bold text-lg flex flex-col gap-2">
+              {selectedVariant.variantAttribute1.name}:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {variantAttribute1Options.map((variant, index) => {
+                return (
+                  <div
+                    className={`w-fit p-4 rounded cursor-pointer ${
+                      selectedVariant && selectedVariant.sku === variant.sku
+                        ? "bg-white border-2 border-slate-950"
+                        : "bg-white border-1 border-slate-400"
+                    }`}
+                    key={index}
+                    onClick={() => {
+                      setSelectedVariant(variant);
+                      router.push(
+                        {
+                          pathname: router.pathname,
+                          query: { 
+                            ...router.query, 
+                            [selectedVariant.variantAttribute1.name]: variant.variantOption1.name
                           },
-                          undefined,
-                          { shallow: true }
-                        );
-                      }}
-                    >
-                      <p className="">{variant.sku}</p>
-                    </div>
-                  ))}
-              </div>
+                        },
+                        undefined,
+                        { shallow: true }
+                      );
+                    }}
+                  >
+                    <p className="">{variant.variantOption1.name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+        {selectedVariant && selectedVariant.variantAttribute2 && selectedVariant.variantAttribute2.name !== "" && variantAttribute2Options.length > 0 && (
+          <>
+            <p className="text-slate-950 font-bold text-lg flex flex-col gap-2">
+              {selectedVariant.variantAttribute2.name}:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {variantAttribute2Options.map((variant, index) => {
+                return (
+                  <div
+                    className={`w-fit p-4 rounded cursor-pointer ${
+                      selectedVariant2 && selectedVariant2.sku === variant.sku
+                        ? "bg-white border-2 border-slate-950"
+                        : "bg-white border-1 border-slate-400"
+                    }`}
+                    onClick={() => {
+                      setSelectedVariant2(variant);
+                      router.push(
+                        {
+                          pathname: router.pathname,
+                          query: { 
+                            ...router.query, 
+                            [selectedVariant.variantAttribute2.name]: variant.variantOption2.name
+                          },
+                        },
+                        undefined,
+                        { shallow: true }
+                      );
+                    }}
+                  >
+                    <p className="">{variant.variantOption2.name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
               {((selectedVariant && selectedVariant.toPriceIncVat !== 0) ||
                 pageData.toPriceIncVat !== 0) && (
                 <div>
@@ -295,6 +405,7 @@ export default function PostPage({ pageData, metadata }: PageProps) {
                   </strong>
                 </div>
               )}
+              <ContactForm productName={pageData.name} />
             </div>
           </div>
         </section>

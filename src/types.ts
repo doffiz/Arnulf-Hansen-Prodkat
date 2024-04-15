@@ -140,6 +140,22 @@ export interface TextChild {
       toPriceExVat: number;
       toPriceIncVat: number;
       vatRate: number;
+      variantAttribute1: {
+        code: string;
+        name: string;
+      }
+      variantAttribute2: {
+        code: string;
+        name: string;
+      }
+      variantOption1: {
+        code: string;
+        name: string;
+      }
+      variantOption2: {
+        code: string;
+        name: string;
+      }
       values: {
         included_propeller_size: string;
         shaft_length: string;
@@ -187,6 +203,7 @@ export interface TextChild {
     };
     kortBeskrivelse: string;
     newProduct: boolean;
+    isBestseller: boolean;
     toPriceIncVat: number;
     fromPriceIncVat: number;
     brand: {
@@ -224,8 +241,7 @@ export type ContactType = {
   export type Category = {
     navn: string;
     slug: {
-        current: string;
-        _type: string;
+      current: string;
     };
     hovedfoto: {
         alt: string;
@@ -234,7 +250,8 @@ export type ContactType = {
         };
     };
     beskrivelse: string;
-}
+    inkluderteFamilier: Array<{ code: string }>;
+  }
 
 export type Spec = {
   group: string;

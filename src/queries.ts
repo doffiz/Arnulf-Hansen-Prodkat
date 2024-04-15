@@ -39,6 +39,16 @@ export const setupQuery = `{
         menuType,
         menuColor,
         menuTextColor,
+        hamburgerExtraItems[]->{
+            title,
+            link {
+                internalLink->{
+                    slug,
+                    
+                },
+                externalLink
+            }
+        },
         extranav[]->{
             title,
             link {

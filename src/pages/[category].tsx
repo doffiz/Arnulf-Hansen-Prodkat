@@ -324,12 +324,22 @@ const handleFamilyClick = (familyName: string) => {
                     .map((product, index) => (
                       <motion.div
                         key={product.sku}
-                        className="group bg-slate-100 hover:bg-slate-200 p-4 rounded-lg"
+                        className="group bg-slate-100 hover:bg-slate-200 p-4 rounded-lg relative"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.1 }}
                       >
                         <Link href={`/${pageData.slug.current}/${product.sku}`}>
+                          {product.newProduct && product.isBestseller === false && (
+                            <div className="absolute top-0 right-0 bg-slate-500 group-hover:bg-slate-600 rounded-tr-xl text-white font-bold text-sm w-1/2 text-center px-4 py-1">
+                              NYHET
+                            </div>
+                          )}
+                              {product.isBestseller && (
+                            <div className="absolute top-0 right-0 bg-slate-500 group-hover:bg-slate-600 rounded-tr-xl text-white font-bold text-sm w-1/2 text-center px-4 py-1">
+                              BESTSELGER
+                            </div>
+                          )}
                           <Image
                             className="object-contain mix-blend-darken w-full h-56"
                             src={product.hovedbilde.cdnUrl || ""}
