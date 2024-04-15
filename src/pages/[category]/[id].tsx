@@ -371,6 +371,7 @@ export default function PostPage({ pageData, metadata }: PageProps) {
                         ? "bg-white border-2 border-slate-950"
                         : "bg-white border-1 border-slate-400"
                     }`}
+                    key={index}
                     onClick={() => {
                       setSelectedVariant2(variant);
                       router.push(
