@@ -118,6 +118,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
         </button>
         <Image
           className="mix-blend-darken max-h-[50vh] object-contain"
+          loading="eager"
           src={images[currentImage].src}
           alt={images[currentImage].alt}
           width={images[currentImage].width !== 0 ? images[currentImage].width : 700}

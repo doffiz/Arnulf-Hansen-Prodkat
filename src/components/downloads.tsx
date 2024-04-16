@@ -17,6 +17,16 @@ const KatalogerComponent: React.FC<KatalogerProps> = ({ kataloger }) => {
             {kataloger.map((katalog, index) => {
                 const fileSizeInMB = (katalog.filesize / (1024 * 1024)).toFixed(2);
                 const fileType = katalog.url.split('.').pop();
+                if (fileSizeInMB === '0.00') {
+                    return (
+                        <div key={index} className="flex gap-2 items-end justify-center">
+                            <a href={katalog.url} download className="text-blue-500 text-3xl hover:underline">
+                                {katalog.navn}
+                            </a>
+                            <p>(.{fileType})</p>
+                        </div>
+                    );
+                }
 
                 return (
                     <div key={index} className="flex gap-2 items-end justify-center">

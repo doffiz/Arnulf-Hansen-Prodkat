@@ -5,11 +5,12 @@ import createClient from "@/lib/sanityClient";
 import { Category, Produkt } from "@/types";
 import Image from "next/image";
 
-interface SearchEngineProps {
-    closeSearch: () => void;
-  }
+type SearchEngineProps = {
+  closeSearch: () => void;
+  inputRef: React.RefObject<HTMLInputElement>;
+};
 
-  const SearchEngine: React.FC<SearchEngineProps> = ({ closeSearch }) => {
+  const SearchEngine: React.FC<SearchEngineProps> = ({ closeSearch, inputRef }) => {
     const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<Produkt[]>([]);
   const [categories, setCategories] = useState([]);
@@ -114,6 +115,8 @@ const handleClick = (result: any) => {
   return (
     <div className="max-w-[1300px] mx-auto px-8 py-8">
       <input
+      ref={inputRef}
+      aria-controls="results"
         className="border-2 border-gray-300 p-2 w-full text-slate-950 text-xl rounded-md"
         type="text"
         value={searchTerm}
@@ -123,8 +126,8 @@ const handleClick = (result: any) => {
         }}
         placeholder="Søk..."
       />
-      {isLoading && <p>Laster...</p>}
-      <div className="grid grid-cols-2 gap-x-2">
+      {isLoading && <p aria-live="polite">Laster...</p>}
+      <div id="results" aria-live="polite" role="status" className="grid grid-cols-2 gap-x-2">
       {!isLoading &&
   searchTerm.length > 0 &&
   results.slice(0, displayCount).map((result: any, index: number) => {

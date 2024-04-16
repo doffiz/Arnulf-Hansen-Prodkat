@@ -114,42 +114,122 @@ export default function PostPage({ pageData, metadata, products }: PageProps) {
   const router = useRouter();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedFamilies, setSelectedFamilies] = useState<string[]>([]);
+  const [sortOrder, setSortOrder] = useState('brand-asc');
+  const [checkedBrands, setCheckedBrands] = useState<string[]>([]); // State for the checked brands
+  const [results, setResults] = useState<Products[]>(products);
 
+
+  const { query } = useRouter();
 
   useEffect(() => {
-    if (Array.isArray(router.query.brand)) {
-      setSelectedBrands(router.query.brand);
-    } else if (typeof router.query.brand === "string") {
-      setSelectedBrands([router.query.brand]);
-    } else {
-      setSelectedBrands([]);
-    }
-  }, [router.query.brand]);
+    let newBrands = query.brand ? Array.isArray(query.brand) ? query.brand : [query.brand] : [];
+    setCheckedBrands(newBrands);
+    console.log("newBrands", newBrands);
+    console.log("sortedBrands", sortedBrands);
+  }, [query]); // Run this effect whenever the query parameters change
+  useEffect(() => {
+    if (!router.isReady) return;
   
-  useEffect(() => {
-    if (Array.isArray(router.query.family)) {
-      setSelectedFamilies(router.query.family);
-    } else if (typeof router.query.family === "string") {
-      setSelectedFamilies([router.query.family]);
-    } else {
-      setSelectedFamilies([]);
+    let brands: string[] = [];
+    if (Array.isArray(router.query.brand)) {
+      brands = router.query.brand;
+    } else if (typeof router.query.brand === "string") {
+      brands = [router.query.brand];
     }
-  }, [router.query.family]);
+  
+    let families: string[] = [];
+    if (Array.isArray(router.query.family)) {
+      families = router.query.family;
+    } else if (typeof router.query.family === "string") {
+      families = [router.query.family];
+    }
+    let sortOrder: string = 'brand-asc';
+    if (typeof router.query.sortOrder === "string") {
+      sortOrder = router.query.sortOrder;
+    }
+
+  let newSortOrder = router.query.sortOrder || 'brand-asc';
+  setSortOrder(newSortOrder as string);
+  
+    let filtered = products.filter(product =>
+      (brands.length === 0 || (product.brand && brands.includes(product.brand.name))) &&
+      (families.length === 0 || (product.family && families.includes(product.family.name)))
+    );
+  
+    let newSortedResults = [...filtered];
+  
+    switch (sortOrder) {
+      case 'brand-asc':
+        newSortedResults.sort((a, b) => a.brand.name.localeCompare(b.brand.name));
+        break;
+      case 'brand-desc':
+        newSortedResults.sort((a, b) => b.brand.name.localeCompare(a.brand.name));
+        break;
+      case 'product-asc':
+        newSortedResults.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'bestsellers':
+        newSortedResults.sort((a, b) => (b.isBestseller ? 1 : -1));
+        break;
+    }
+  
+    setResults(newSortedResults);
+  }, [router.query, sortOrder]);
+
+  const sortResults = (results: Products[]) => {
+    let sortedResults = [...results];
+  
+    switch (sortOrder) {
+      case 'brand-asc':
+        sortedResults.sort((a, b) => {
+          if (a.brand && b.brand) {
+            return a.brand.name.localeCompare(b.brand.name);
+          }
+          return 0;
+        });
+        break;
+      case 'brand-desc':
+        sortedResults.sort((a, b) => {
+          if (a.brand && b.brand) {
+            return b.brand.name.localeCompare(a.brand.name);
+          }
+          return 0;
+        });
+        break;
+      case 'product-asc':
+        sortedResults.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'bestsellers':
+        sortedResults.sort((a, b) => (b.isBestseller ? 1 : -1));
+        break;
+    }
+  
+    return sortedResults;
+  };
 
   const handleBrandClick = (brandName: string) => {
     setSelectedBrands((prevBrands) => {
-      let newBrands;
+      let newBrands: string[];
       if (prevBrands.includes(brandName)) {
         newBrands = prevBrands.filter((brand) => brand !== brandName);
       } else {
         newBrands = [...prevBrands, brandName];
       }
-
-      router.replace({
+  
+      router.push({
         pathname: router.pathname,
         query: { ...router.query, brand: newBrands },
       });
-
+  
+      let newResults = products.filter(
+        (product) =>
+          (newBrands.length === 0 || (product.brand && newBrands.includes(product.brand.name))) &&
+          (selectedFamilies.length === 0 || (product.family && selectedFamilies.includes(product.family.name)))
+      );
+  
+      newResults = sortResults(newResults); // Sort the results after filtering
+      setResults(newResults);
+  
       return newBrands;
     });
   };
@@ -173,12 +253,16 @@ export default function PostPage({ pageData, metadata, products }: PageProps) {
 
   const sortedBrands = Object.entries(brandCounts).sort((a, b) => b[1] - a[1]);
 
-  const filteredProducts = products.filter(
-    (product) =>
-      (selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand.name))) &&
-      (selectedFamilies.length === 0 || (product.family && selectedFamilies.includes(product.family.name)))
-  );
+  const handleSortChange = (newSortOrder: string) => {
+    // Update the sortOrder state
+    setSortOrder(newSortOrder);
 
+    // Update the URL with the new sort order
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, sortOrder: newSortOrder },
+    });
+  };
   const handleShowMore = () => {
     setNumToShow(numToShow + 16);
   };
@@ -253,7 +337,7 @@ const handleFamilyClick = (familyName: string) => {
                     <input
                       className="h-4 w-4 accent-[#842426]"
                       type="checkbox"
-                      checked={selectedBrands.includes(brandName)}
+                      checked={checkedBrands.includes(brandName)}
                       onChange={() => handleBrandClick(brandName)}
                     />
                     {brandName} ({count})
@@ -312,14 +396,26 @@ const handleFamilyClick = (familyName: string) => {
             </Accordion>
           </aside>
           <div className="basis-4/5 flex flex-col gap-2">
+            <div className="flex justify-between items-end">
+              <div>
+
             <h1 className="text-5xl font-bold py-4">{pageData.navn}</h1>
             {pageData.beskrivelse && (
               <p className="text-xl my-4">{pageData.beskrivelse}</p>
-            )}
-            {filteredProducts && products.length > 0 && (
+              )}
+              </div>
+              <select value={sortOrder} className="px-4 py-2 border-2 border-slate-400" onChange={(e) => handleSortChange(e.target.value)}>
+        <option value="brand-asc">Merke (A-Å)</option>
+        <option value="brand-desc">Merke (Å-A)</option>
+        <option value="product-asc">Produkt (A-Å)</option>
+        <option value="product-desc">Produkt (Å-A)</option>
+        <option value="bestsellers">Bestselgere</option>
+      </select>
+            </div>
+            {results && products.length > 0 && (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {filteredProducts
+                  {results
                     .slice(0, numToShow)
                     .map((product, index) => (
                       <motion.div
@@ -344,8 +440,8 @@ const handleFamilyClick = (familyName: string) => {
                             className="object-contain mix-blend-darken w-full h-56"
                             src={product.hovedbilde.cdnUrl || ""}
                             alt={product.hovedbilde.alt}
-                            width={500}
-                            height={500}
+                            width={200}
+                            height={200}
                           />
                           {product.brand.name && (
                             <p className="text-slate-900 text-sm">
@@ -367,10 +463,10 @@ const handleFamilyClick = (familyName: string) => {
                     ))}
                 </div>
                 <p className="text-center my-4">
-                  Viser {Math.min(numToShow, filteredProducts.length)} produkter
-                  av totalt {filteredProducts.length} produkter
+                  Viser {Math.min(numToShow, results.length)} produkter
+                  av totalt {results.length} produkter
                 </p>
-                {numToShow < filteredProducts.length && (
+                {numToShow < results.length && (
                   <div className="text-center">
                     <button
                       className="bg-black px-4 py-2 text-white"

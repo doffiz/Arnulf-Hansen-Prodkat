@@ -54,8 +54,8 @@ const BildeGalleri: React.FC<BildeGalleriProps> = ({ bildegalleri }) => {
                         <Image
                             src={image.src}
                             alt={image.alt}
-                            width={image.width}
-                            height={image.height}
+                            width={image.width || 300}
+                            height={image.height || 500}
                         />
                     </div>
                 ))}

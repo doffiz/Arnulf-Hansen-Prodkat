@@ -282,8 +282,8 @@ export default function PostPage({ pageData, metadata }: PageProps) {
               <Image
                 src={pageData.forsidebilde.cdnUrl}
                 alt={pageData.forsidebilde.alt}
-                width={pageData.forsidebilde.width / 2}
-                height={pageData.forsidebilde.height / 2}
+                width={(pageData.forsidebilde.width || 2000) / 2}
+                height={(pageData.forsidebilde.height || 1500) / 2}
                 className="object-cover w-full h-[60vh]"
               />
               <div className="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-t from-black to-transparent" />
@@ -317,7 +317,7 @@ export default function PostPage({ pageData, metadata }: PageProps) {
               {(!pageData.varianter || pageData.varianter.length === 0) &&
                 pageData.sku && (
                   <p className="text-slate-700 text-sm flex flex-col gap-2">
-                    VARENUMMER: {pageData.sku}
+                    VARENUMMER: {pageData.sku.toUpperCase()}
                   </p>
                 )}
         {variantAttribute1Options.length > 0 && (

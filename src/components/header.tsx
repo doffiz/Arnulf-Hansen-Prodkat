@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,8 +47,14 @@ type Props = {
 };
 
 export default function Header({ menu, setup }: Props) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
   console.log(menu);
   return (
     <>
@@ -98,7 +104,7 @@ export default function Header({ menu, setup }: Props) {
                 className="flex flex-col p-4 justify-end w-fit items-center"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
-                <FontAwesomeIcon icon="search" size="2x" />
+                <FontAwesomeIcon icon={isSearchOpen ? "times" : "search"} size="2x" />
                 Søk
               </button>
               {menu.menuType === "hamburger" ? (
@@ -136,7 +142,7 @@ export default function Header({ menu, setup }: Props) {
             </div>
           </div>
         </div>
-        {isSearchOpen && <SearchEngine closeSearch={() => setIsSearchOpen(false)} />}
+        {isSearchOpen && <SearchEngine closeSearch={() => setIsSearchOpen(false)} inputRef={searchInputRef} />}
         {isMenuOpen && (
           <nav
             style={{
