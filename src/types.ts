@@ -262,3 +262,37 @@ export type Spec = {
 export type SpecsGridProps = {
   specs: Spec[];
 };
+export interface Asset {
+  _id: string;
+  url: string;
+}
+
+ export interface Image {
+  asset: Asset;
+  alt: string;
+}
+
+ export interface PageReference {
+  title: string;
+  slug: {
+    current: string;
+  };
+}
+
+ export interface Page {
+  title: string;
+  slug: {
+    current: string;
+  };
+  ingress: string;
+  content: TextBlock[];
+  ingressImage: Image;
+  showTitleAndIngress: boolean;
+  pageBuilder: any[];
+  showIngressImage: boolean;
+  parent: PageReference;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string[];
+  seoImage: Image;
+}

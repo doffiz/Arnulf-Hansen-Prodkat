@@ -142,6 +142,19 @@ export const categoriesQuery = `*[_type == "categories"] | order(navn asc) {
   },
   beskrivelse,
 }`;
+
+export const cat = `*[_type == "categories"] | order(navn asc) {
+    navn,
+    slug,
+    hovedfoto{
+        asset->{
+            url
+        },
+        alt
+    },
+    beskrivelse,
+    }`;
+    
   
 
 export const articlesQuery = `

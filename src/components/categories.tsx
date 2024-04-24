@@ -11,6 +11,7 @@ interface CategoriesProps {
 }
 
 const Categories: React.FC<CategoriesProps> = ({ categories }) => {
+    console.log("cats", categories)
     return (
         <div className="max-w-[1300px] px-[20px] xl:px-0 w-full mx-auto">
         <h1 className="sr-only text-white bg-black">Kategorier</h1>

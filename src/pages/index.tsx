@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Open_Sans } from "next/font/google";
-import { frontPageQuery, categoriesQuery, setupIndexQuery, navQuery, footerQuery } from "@/queries";
+import { frontPageQuery, setupIndexQuery, navQuery, footerQuery, cat } from "@/queries";
 import Head from "next/head";
 import { GetServerSidePropsContext } from "next";
 import { urlFor } from "@/lib/sanityImageBuilder";
@@ -60,8 +60,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const frontPage = await createClient.fetch(frontPageQuery);
     const menuData = await createClient.fetch(navQuery);
     const footerData = await createClient.fetch(footerQuery);
-    const categories = await createClient.fetch(categoriesQuery);
-    console.log(categories);
+    const categories = await createClient.fetch(cat).catch(console.error);
+        console.log(categories);
     console.log(setupData);
     return {
       props: {

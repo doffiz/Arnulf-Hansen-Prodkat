@@ -92,12 +92,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [open, setOpen] = useState(false);
-  const images = [hovedbilde, ...bildekarusell].map((bilde) => ({
-    src: bilde.cdnUrl,
-    width: bilde.width || 700,
-    height: bilde.height || 500,
-    alt: bilde.alt,
-  }));
+  const images = [hovedbilde, ...bildekarusell]
+    .filter((bilde) => !bilde.cdnUrl.endsWith('.gif'))
+    .map((bilde) => ({
+      src: bilde.cdnUrl,
+      width: bilde.width || 700,
+      height: bilde.height || 500,
+      alt: bilde.alt,
+    }));
 
   const nextImage = () => {
     setCurrentImage((currentImage + 1) % images.length);

@@ -21,7 +21,6 @@ interface Props {
   isReverse: boolean;
 }
 
-// ... (imports)
 
 const Annenhver: React.FC<Props> = ({ annenhver, isReverse }) => {
   const { Bilde, Overskrift, Tekst, bgfarge, tekstfarge, Ingress } = annenhver;
@@ -35,11 +34,11 @@ const Annenhver: React.FC<Props> = ({ annenhver, isReverse }) => {
 
   return (
     <section
-      className="w-screen py-20"
+      className="w-screen py-24"
       style={{ backgroundColor: bakgrunn, color: tekst }}
     >
       <div
-        className={`flex flex-col ${flexDirection} gap-20 max-w-[1600px] mx-auto px-12`}
+        className={`flex flex-col ${flexDirection} gap-20 max-w-[1300px] mx-auto px-4`}
       >
         <div className="flex-1">
           {imageUrl && (

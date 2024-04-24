@@ -18,8 +18,12 @@ const SpecsGrid: React.FC<SpecsGridProps> = ({ specs }) => {
                          {specs.map((spec: Spec, index:number) => (
                             <div key={spec.label} className={`flex justify-between ${index % 2 === 0 ? '' : 'bg-gray-200'}`}>
                                 <span className="font-semibold">{spec.label}</span>
-                                <span>{spec.value.join(", ")}</span>
-                            </div>
+                                <span>
+                                    {Array.isArray(spec.value) && typeof spec.value[0] === 'string'
+                                        ? Array.from(new Set(spec.value[0].split(/\s+/))).join(' ')
+                                        : spec.value.join(", ")}
+                                </span>
+</div>
                         ))}
                     </div>
                 ))}

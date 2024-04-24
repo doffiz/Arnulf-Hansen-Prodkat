@@ -162,7 +162,7 @@ export default function Header({ menu, setup }: Props) {
                       className="px-4 py-2"
                       href={
                         item.link?.externalLink ||
-                        `/${item.link?.internalLink?.slug?.current ?? "#"}`
+                        `/a/${item.link?.internalLink?.slug?.current ?? "#"}`
                       }
                     >
                       {item.title}

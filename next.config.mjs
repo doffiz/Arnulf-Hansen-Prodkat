@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['cdn.sanity.io', 'cdn.erling-sande.no', 'data.bkhengeren.no', 'www.oienbaat.no', 'marex.no'],
+    domains: ['cdn.sanity.io', 'www.nordkapp-boats.no', 'www-static-nw.husqvarna.com', 'images.squarespace-cdn.com', 'pionerboat.no', 'pionerboat.se', 'www.sting-boats.no', 'www.askeladden.no', 'shop.mercurymarine.com', 'cdn.erling-sande.no', 'data.bkhengeren.no', 'www.oienbaat.no', 'marex.no'],
   },
 };
 

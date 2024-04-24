@@ -18,7 +18,10 @@ const CustomPortableText: React.FC<CustomPortableTextProps> = ({ content }) => {
             components={{
                 block: {
                     h2: ({ children }: { children?: any }) => (
-                        <h2 className="text-3xl text-center text-bold">{children}</h2>
+                        <h2 className="text-3xl text-bold">{children}</h2>
+                    ),
+                    h3: ({ children }: { children?: any }) => (
+                        <h3 className="text-2xl text-bold">{children}</h3>
                     ),
                     normal: ({ children }: { children?: any }) => (
                         <p className="text-lg">{children}</p>
@@ -39,7 +42,7 @@ const CustomPortableText: React.FC<CustomPortableTextProps> = ({ content }) => {
                 },
                 marks: {
                     strong: ({ children }: { children: any }) => (
-                        <strong className="font-semibold">{children}</strong>
+                        <strong className="font-bold">{children}</strong>
                     ),
                 },
             }}

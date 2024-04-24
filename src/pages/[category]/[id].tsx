@@ -18,6 +18,7 @@ import LangBeskrivelseComponent from "@/components/langBeskrivelse";
 import BildeGalleri from "@/components/bildegrid";
 import KatalogerComponent from "@/components/downloads";
 import ContactForm from "@/components/getOffer";
+import BoatBuilder from "@/components/buildyourown";
 
 interface PageProps {
   pageData: Produkt;
@@ -25,10 +26,11 @@ interface PageProps {
 }
 
 async function fetchPageData(sku: string): Promise<Produkt> {
-  const query = `*[_type == "product" && sku == $sku ]{
+  const qquery = `*[_type == "product" && sku == $sku ]{
     name,
     sku,
     isModel,
+    buildUrl,
     kataloger[]{
         navn,
         url,
@@ -139,7 +141,7 @@ async function fetchPageData(sku: string): Promise<Produkt> {
       }[0]`;
 
   const params = { sku };
-  const page: Produkt = await createClient.fetch(query, params);
+  const page: Produkt = await createClient.fetch(qquery, params);
 
 
   return page;
@@ -410,12 +412,15 @@ export default function PostPage({ pageData, metadata }: PageProps) {
                   </strong>
                 </div>
               )}
+              {pageData && pageData.buildUrl && (
+                <BoatBuilder url={pageData.buildUrl} />
+              )}
               <ContactForm productName={pageData.name} />
             </div>
           </div>
         </section>
-        {pageData.specs && <SpecsGrid specs={pageData.specs} />}
-        {pageData.langBeskrivelse && (
+        {pageData.specs && pageData.specs.length > 0 && <SpecsGrid specs={pageData.specs} />}
+        {pageData.langBeskrivelse && pageData.langBeskrivelse.length > 0 && (
           <LangBeskrivelseComponent
             langBeskrivelse={pageData.langBeskrivelse}
           />

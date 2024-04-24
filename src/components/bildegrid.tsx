@@ -27,11 +27,13 @@ const BildeGalleri: React.FC<BildeGalleriProps> = ({ bildegalleri }) => {
     const [currentImage, setCurrentImage] = useState(0);
     const [open, setOpen] = useState(false);
 
-    const images = bildegalleri.map((bilde) => ({
-        src: bilde.cdnUrl,
-        width: bilde.width,
-        height: bilde.height,
-        alt: bilde.alt,
+    const images = bildegalleri
+    .filter((bilde) => !bilde.cdnUrl.endsWith('.gif'))
+    .map((bilde) => ({
+      src: bilde.cdnUrl,
+      width: bilde.width,
+      height: bilde.height,
+      alt: bilde.alt,
     }));
 
     return (

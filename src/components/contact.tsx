@@ -12,15 +12,15 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
 
   return (
     <section className="w-screen p-4 md:p-12">
-      <div className={`flex ${flexDirection} max-w-[1600px] mx-auto`}>
-        <div className="flex-1 flex flex-col gap-4 md:p-12">
+      <div className={`flex ${flexDirection} max-w-[1300px] mx-auto`}>
+        <div className="flex-1 flex flex-col gap-4 md:p-4">
           {contact.title && (
             <h2 className="text-5xl font-bold">{contact.title}</h2>
           )}
           {contact.ingress && <p className="text-xl">{contact.ingress}</p>}
           {contact.content && <CustomPortableText content={contact.content} />}
         </div>
-        <div className="flex-1 p-12">
+        <div className="flex-1 p-4">
           {contact.felt && (
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-2">
@@ -59,13 +59,16 @@ const Contact: React.FC<ContactProps> = ({ contact }) => {
                     case "textarea":
                       return (
                         <div key={felt._key} className="flex flex-col gap-2">
-                          <label htmlFor={felt._key}>
+                          <label 
+                          className="text-xl font-bold"
+                          htmlFor={felt._key}>
                             {felt.label}
                             {felt.required && (
                               <span className="text-red-600 ml-2">*</span>
                             )}
                           </label>
                           <textarea
+                            className="border border-gray-400 p-4 text-xl"
                             id={felt._key}
                             name={felt.name}
                             placeholder={felt.placeholder}
