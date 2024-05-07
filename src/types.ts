@@ -194,6 +194,7 @@ export interface TextChild {
       current: string;
     }
     sku: string;
+    isLocatedInStore: string;
     hovedbilde: {
       cdnUrl: string;
       alt: string;

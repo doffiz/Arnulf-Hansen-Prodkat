@@ -71,7 +71,7 @@ export default function Header({ menu, setup }: Props) {
               src={setup.logo.asset.url}
               width={250}
               height={100}
-              className="md:max-h-[100px] max-h-[50px] max-w-[150px] md:max-w-[450px] w-full"
+              className="md:max-h-[100px] max-h-[50px] max-w-[150px] md:max-w-[420px] w-full"
               alt={setup.title + " - Til forsiden"}
             />
           </Link>
@@ -82,7 +82,7 @@ export default function Header({ menu, setup }: Props) {
                   {menu.extranav &&
                     menu.extranav.map((item) => (
                       <li
-                        className="border-[1px] rounded-full cursor-pointer text-[1rem] font-semibold px-4 py-[0.2rem] hover:bg-white hover:text-[#842426]"
+                        className={`border-[1px] rounded-lg cursor-pointer text-[1rem] font-semibold px-4 py-[0.1rem] hover:bg-white hover:text-[#842426] ${item.title === 'Produktkatalog' ? 'bg-white text-[#842426]' : ''}`}
                         key={item.title}
                       >
                         <Link

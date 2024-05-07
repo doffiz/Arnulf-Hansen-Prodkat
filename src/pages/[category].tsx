@@ -394,6 +394,22 @@ const handleFamilyClick = (familyName: string) => {
                 Fjern alle filtre
               </a>
             </Accordion>
+            {/* <Accordion title="LOKASJON" open={true}>
+              <ul>
+                <li className="cursor-pointer flex items-center gap-2">
+                  <input className="h-4 w-4 accent-[#842426]" type="checkbox" />
+                  Bodø
+                </li>
+                <li className="cursor-pointer flex items-center gap-2">
+                  <input className="h-4 w-4 accent-[#842426]" type="checkbox" />
+                  Vågaholmen
+                </li>
+                <li className="cursor-pointer flex items-center gap-2">
+                  <input className="h-4 w-4 accent-[#842426]" type="checkbox" />
+                  Ikke spesifisert/begge
+                </li>
+              </ul>
+            </Accordion> */}
           </aside>
           <div className="basis-4/5 flex flex-col gap-2">
             <div className="flex justify-between items-end">
@@ -434,6 +450,16 @@ const handleFamilyClick = (familyName: string) => {
                               {product.isBestseller && (
                             <div className="absolute top-0 right-0 bg-slate-500 group-hover:bg-slate-600 rounded-tr-xl text-white font-bold text-sm w-1/2 text-center px-4 py-1">
                               BESTSELGER
+                            </div>
+                          )}
+                               {product.isLocatedInStore && product.isLocatedInStore == "Bodø" && (
+                            <div className="absolute top-0 right-0 bg-slate-500 group-hover:bg-slate-600 rounded-tr-xl text-white font-bold text-sm w-1/2 text-center px-4 py-1">
+                              Bodø
+                            </div>
+                          )}
+                                {product.isLocatedInStore && product.isLocatedInStore == "Vågaholmen" && (
+                            <div className="absolute top-0 right-0 bg-slate-500 group-hover:bg-slate-600 rounded-tr-xl text-white font-bold text-sm w-1/2 text-center px-4 py-1">
+                              Vågaholmen
                             </div>
                           )}
                           <Image
